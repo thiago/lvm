@@ -42,7 +42,11 @@ func aliasCmd(alias string, s service) cli.Command {
 			volumes := composeYAML.Volumes{}
 			volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: homeFolder, Source: homeFolder})
 			for _, cache := range s.Cache {
-				volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: cache, Source: strings.Join([]string{cacheFolder, alias, cache}, string(os.PathSeparator))})
+				m := strings.Join([]string{cacheFolder, alias, cache}, string(os.PathSeparator))
+				if err := os.MkdirAll(m, os.ModePerm); err != nil{
+					log.Fatal(err)
+				}
+				volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: cache, Source: m})
 			}
 
 			// Prepare command

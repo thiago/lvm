@@ -30,16 +30,16 @@
   name = "github.com/mitchellh/go-homedir"
 
 [[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.2"
-
-[[constraint]]
   name = "github.com/spf13/viper"
   version = "1.0.2"
 
 [prune]
   go-tests = true
   unused-packages = true
+
+[[constraint]]
+  name = "gopkg.in/urfave/cli.v1"
+  version = "1.20.0"
 
 [[constraint]]
   name = "github.com/docker/libcompose"
@@ -68,6 +68,32 @@
 [[override]]
   name = "github.com/xeipuuv/gojsonschema"
   revision = "0c8571ac0ce161a5feb57375a9cdf148c98c0f70"
-[[constraint]]
-  name = "gopkg.in/urfave/cli.v1"
-  version = "1.20.0"
+
+[[override]]
+  name = "golang.org/x/net"
+  revision = "c427ad74c6d7a814201695e9ffde0c5d400a7674"
+
+[[override]]
+  name = "github.com/sirupsen/logrus"
+  version = "1.0.3"
+
+[[override]]
+  name = "github.com/pkg/errors"
+  revision = "839d9e913e063e28dfd0e6c7b7512793e0a48be9"
+
+[[override]]
+  name = "github.com/docker/libtrust"
+  revision = "9cbd2a1374f46905c68a4eb3694a130610adc62a"
+
+[[override]]
+  name = "github.com/opencontainers/go-digest"
+  revision = "a6d0ee40d4207ea02364bd3b9e8e77b9159ba1eb"
+
+[[override]]
+  name = "github.com/opencontainers/image-spec"
+  revision = "f03dbe35d449c54915d235f1a3cf8f585a24babe"
+
+[[override]]
+  name = "github.com/Nvveen/Gotty"
+  source = "https://github.com/ijc/Gotty.git"
+  revision = "6018b68f96b839edfbe3fb48668853f5dbad88a3"
