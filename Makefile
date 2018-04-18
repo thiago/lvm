@@ -11,7 +11,7 @@ LDFLAGS = \
 	-X main.version=$(VERSION)
 
 .PHONY: all
-all: depslint lint deps test cross ## execute all commands
+all: depslint deps lint test cross ## execute all commands
 
 .PHONY: deps
 deps: ## install dependencies
@@ -49,6 +49,7 @@ depslint: ## install lint dependencies: gofmt, govet, golint, gocyclo, ineffassi
 	go get -u github.com/mdempsky/unconvert
 	go get -u honnef.co/go/tools/cmd/unused
 	go get -u github.com/tsenart/deadcode
+	go get -u golang.org/x/tools/cmd/goimports
 	go get -u golang.org/x/tools/cmd/goimports
 	go get -u mvdan.cc/interfacer
 	go get -u mvdan.cc/unparam
