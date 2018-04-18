@@ -36,6 +36,16 @@ depslint: ## install lint dependencies: gofmt, govet, golint, gocyclo, ineffassi
 	go get -u github.com/dnephin/govet
 	go get -u github.com/alecthomas/gocyclo
 	go get -u github.com/gordonklaus/ineffassign
+	go get -u honnef.co/go/tools/cmd/gosimple
+	go get -u github.com/walle/lll/...
+	go get -u github.com/mdempsky/unconvert
+	go get -u honnef.co/go/tools/cmd/unused
+	go get -u github.com/tsenart/deadcode
+	go get -u golang.org/x/tools/cmd/goimports
+	go get -u mvdan.cc/interfacer
+	go get -u mvdan.cc/unparam
+	go get -u github.com/client9/misspell/cmd/misspell
+	go get -u github.com/alexkohler/nakedret
 
 lint: ## run all the lint tools (see gometalinter.json)
 	gometalinter.v2 --config gometalinter.json --vendor ./...
