@@ -1,4 +1,5 @@
 language: go
+go: "1.10"
 
 deploy:
 - provider: script
