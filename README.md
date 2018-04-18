@@ -1,4 +1,4 @@
-# LVM - Language Version Manager
+# LVM - Language Version Manager [![Build Status][travis-image]][travis-url]
 
 Facilitate the use of different language versions so they work as if they
 were installed directly on the host.
@@ -115,3 +115,7 @@ Run the lint tools to ensure that code is correct
 For more commands, please see `make help`.
 
 **Please let me know if you have any questions or suggestions**. *[issues](https://github.com/thiago/lvm/issues)*
+
+
+[travis-image]: https://travis-ci.org/thiago/lvm.svg?branch=master
+[travis-url]: https://travis-ci.org/thiago/lvm
