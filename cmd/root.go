@@ -17,26 +17,7 @@ import (
 var homeFolder string
 
 type config struct {
-	Services map[string]struct {
-		// Image of container
-		Image string
-		// Short description of service
-		Short string
-		// Long description of service
-		Long string
-		// Aliases is a list of subcommands for service like npm, pip, ...
-		Aliases []string
-		// Env is a list of environment variables to set in container
-		Env []string
-		// Cache is a list of folders to cache
-		Cache []string
-		// PreCmd is executed before command
-		PreCmd string
-		// Entrypoint overwrite image ENTRYPOINT
-		Entrypoint []string
-		// Category is a way to categorize commands
-		Category string
-	}
+	Services map[string]service
 }
 
 type service struct {
