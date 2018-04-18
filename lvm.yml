@@ -1,0 +1,54 @@
+Services:
+  # Alpine
+  alpine:
+    Short: A minimal Docker image based on Alpine Linux with a complete package index and only 5 MB in size!
+    Image: alpine
+    Category: Base Images
+    Aliases:
+      - ls
+      - echo
+      - pwd
+      - cat
+      - du
+
+  # Golang
+  go:
+    Category: Languages
+    Short: Go (golang) is a general purpose, higher-level, imperative programming language.
+    Image: golang
+    Cache:
+      - /go
+
+  # NodeJS
+  node:
+    Category: Languages
+    Short: Node.js is a JavaScript-based platform for server-side and networking applications.
+    Image: node
+    Aliases:
+      - npm
+      - yarn
+    Cache:
+      - /opt/npm
+      - /opt/node
+      - /usr/local/share/.config/yarn
+    PreCmd: export PATH=/opt/node/bin:$PATH
+    Env:
+      - NPM_CONFIG_CACHE=/opt/npm
+      - NPM_CONFIG_PREFIX=/opt/node
+      - NODE_PATH=/opt/node
+
+  # Python
+  python:
+    Category: Languages
+    Short: Python is an interpreted, interactive, object-oriented, open-source programming language.
+    Image: python
+    Aliases:
+      - pip
+    Cache:
+      - /opt/python
+      - /opt/pip
+    PreCmd: export PATH=/opt/python/bin:$PATH
+    Env:
+      - PYTHONUSERBASE=/opt/python
+      - PIP_DOWNLOAD_CACHE=/opt/pip
+      - PIP_USER=True

@@ -1,0 +1,44 @@
+BUILD_DATA = $(shell date -u '+%Y-%m-%d_%I:%M:%S%p')
+PROJECT_NAME = $(shell basename ${PWD})
+PROJECT_DIR = $(shell ${PWD})
+COMMIT_SHA = $(shell git rev-parse --short HEAD || echo "GitNotFound")
+MODULE_NAME = $(shell go list)
+VERSION = $(shell git describe --tags --exact-match 2> /dev/null || git symbolic-ref -q --short HEAD)
+LDFLAGS = \
+	-X main.name=$(PROJECT_NAME) \
+	-X main.buildDate=$(BUILD_DATA) \
+	-X main.gitSHA=$(COMMIT_SHA) \
+	-X main.version=$(VERSION)
+
+deps: ## install dependencies
+	go get -u github.com/golang/dep/cmd/dep github.com/mitchellh/gox
+	dep ensure
+
+binary: ## build binary to current OS
+	gox -output "$(PROJECT_NAME)" \
+		-os `go env GOHOSTOS` \
+		-arch=`go env GOHOSTARCH` \
+		-ldflags='$(LDFLAGS)' $(MODULE_NAME)
+
+cross: ## build binary cross OS
+	rm -rf ./build/$(PROJECT_NAME)*
+	gox -output "./build/{{.Dir}}-{{.OS}}-{{.Arch}}" \
+		-os "linux darwin windows" \
+		-arch="amd64" \
+		-ldflags="$(LDFLAGS)" $(MODULE_NAME)
+
+test: ## test go files
+	go test -cover $(shell go list ./...|grep -v '/vendor/')
+
+depslint: ## install lint dependencies: gofmt, govet, golint, gocyclo, ineffassign
+	go get -u gopkg.in/alecthomas/gometalinter.v2
+	go get -u github.com/golang/lint/golint
+	go get -u github.com/dnephin/govet
+	go get -u github.com/alecthomas/gocyclo
+	go get -u github.com/gordonklaus/ineffassign
+
+lint: ## run all the lint tools (see gometalinter.json)
+	gometalinter.v2 --config gometalinter.json --vendor ./...
+
+help: ## print this help
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {sub("\\\\n",sprintf("\n%22c"," "), $$2);printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

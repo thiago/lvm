@@ -1,9 +1,22 @@
 package main
 
-import "github.com/thiago/lvm/cmd"
+import (
+	"fmt"
+	"log"
+	"os"
 
-var version = "master"
+	"github.com/thiago/lvm/cmd"
+)
+
+var name = "lvm"
+var version = "dev"
+var gitSHA = ""
+var buildDate = ""
 
 func main() {
-	cmd.Execute(version)
+	app := cmd.App(name, fmt.Sprintf("%s - build date %s - commit: %s", version, buildDate, gitSHA))
+	err := app.Run(os.Args)
+	if err != nil {
+		log.Fatal(err)
+	}
 }

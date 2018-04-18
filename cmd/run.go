@@ -27,12 +27,16 @@ func aliasCmd(alias string, s service) cli.Command {
 		Category:        s.Category,
 		SkipFlagParsing: true,
 		Action: func(cmd *cli.Context) error {
+			detached := cmd.GlobalBool("detach")
+			cacheFolder := cmd.GlobalString("cache")
 			skipCommand := cmd.GlobalBool("skip-cmd")
 			ports := cmd.GlobalStringSlice("port")
 			userEnvs := cmd.GlobalStringSlice("env")
-			detached := cmd.GlobalBool("d")
 			keep := cmd.GlobalBool("keep")
 			user := cmd.GlobalString("user")
+			tag := cmd.GlobalString("tag")
+			entrypoint := cmd.GlobalStringSlice("entrypoint")
+
 			workingDir, err := os.Getwd()
 			if err != nil {
 				log.Fatal(err)
@@ -40,10 +44,17 @@ func aliasCmd(alias string, s service) cli.Command {
 
 			// Mount home and cache folders
 			volumes := composeYAML.Volumes{}
-			volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: homeFolder, Source: homeFolder})
+			homeVolume := &composeYAML.Volume{Destination: homeFolder, Source: homeFolder}
+			fakeHome := strings.Join([]string{cacheFolder, "home"}, string(os.PathSeparator))
+			fakeHomeVolume := &composeYAML.Volume{
+				Destination: fakeHome,
+				Source:      fakeHome,
+			}
+
+			volumes.Volumes = append(volumes.Volumes, homeVolume, fakeHomeVolume)
 			for _, cache := range s.Cache {
-				m := strings.Join([]string{cacheFolder, alias, cache}, string(os.PathSeparator))
-				if err := os.MkdirAll(m, os.ModePerm); err != nil{
+				m := strings.Join([]string{cacheFolder, "services", alias, s.GetImageTag(tag), cache}, string(os.PathSeparator))
+				if err := os.MkdirAll(m, os.ModePerm); err != nil {
 					log.Fatal(err)
 				}
 				volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: cache, Source: m})
@@ -63,16 +74,13 @@ func aliasCmd(alias string, s service) cli.Command {
 
 			// append environments
 			var envs []string
-			for _, v := range s.Env {
-				envs = append(envs, v)
-			}
-			for _, v := range userEnvs {
-				envs = append(envs, v)
-			}
+			envs = append(envs, "HOME="+fakeHome)
+			envs = append(envs, s.Env...)
+			envs = append(envs, userEnvs...)
 
 			// Configure service
 			cConfig := &composeConfig.ServiceConfig{
-				Image:       s.Image,
+				Image:       s.GetImage(tag),
 				Command:     command,
 				WorkingDir:  workingDir,
 				Volumes:     &volumes,
@@ -92,10 +100,14 @@ func aliasCmd(alias string, s service) cli.Command {
 				cConfig.Entrypoint = s.Entrypoint
 			}
 
+			if len(entrypoint) > 0 {
+				cConfig.Entrypoint = entrypoint
+			}
+
 			// Create a empty project to setup context
 			cContext := &ctx.Context{
 				Context: project.Context{
-					ProjectName: "lvm",
+					ProjectName: cmd.App.Name,
 				},
 			}
 			_, err = composeDocker.NewProject(cContext, nil)
@@ -110,7 +122,7 @@ func aliasCmd(alias string, s service) cli.Command {
 				log.Println(err)
 			}
 
-			// if flag keep, do not remove container
+			// if flag keep, don't remove the container
 			if !keep {
 				err = s.Delete(cmdContext, options.Delete{})
 				if err != nil {
