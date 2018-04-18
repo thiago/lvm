@@ -54,10 +54,13 @@ func aliasCmd(alias string, s service) cli.Command {
 			volumes.Volumes = append(volumes.Volumes, homeVolume, fakeHomeVolume)
 			for _, cache := range s.Cache {
 				m := strings.Join([]string{cacheFolder, "services", alias, s.GetImageTag(tag), cache}, string(os.PathSeparator))
-				if err := os.MkdirAll(m, os.ModePerm); err != nil {
+				volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: cache, Source: m})
+			}
+
+			for _, v := range volumes.Volumes{
+				if err := os.MkdirAll(v.Source, os.ModePerm); err != nil {
 					log.Fatal(err)
 				}
-				volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: cache, Source: m})
 			}
 
 			// Prepare command
