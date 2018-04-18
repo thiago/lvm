@@ -50,7 +50,6 @@ depslint: ## install lint dependencies: gofmt, govet, golint, gocyclo, ineffassi
 	go get -u honnef.co/go/tools/cmd/unused
 	go get -u github.com/tsenart/deadcode
 	go get -u golang.org/x/tools/cmd/goimports
-	go get -u golang.org/x/tools/cmd/goimports
 	go get -u mvdan.cc/interfacer
 	go get -u mvdan.cc/unparam
 	go get -u github.com/client9/misspell/cmd/misspell

@@ -57,7 +57,7 @@ func aliasCmd(alias string, s service) cli.Command {
 				volumes.Volumes = append(volumes.Volumes, &composeYAML.Volume{Destination: cache, Source: m})
 			}
 
-			for _, v := range volumes.Volumes{
+			for _, v := range volumes.Volumes {
 				if err := os.MkdirAll(v.Source, os.ModePerm); err != nil {
 					log.Fatal(err)
 				}
