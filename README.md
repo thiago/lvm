@@ -7,7 +7,7 @@ When executing a command, LVM creates a container with `PWD` mounted with
 network `host` by default, creates a "fake" user home to mount on every
 command and set `HOME` variable to fake user home.
 
-# Usage
+## Usage
 
 LVM is configured with `.yml|.json` file. By default search `lvm.yml` in the
 current directory or `$HOME`.
@@ -42,7 +42,7 @@ type config struct {
 }
 ```
 
-#### Configuration example
+### Configuration example
 
 ```yaml
 Services:
@@ -61,12 +61,13 @@ Download the default configuration
     $ curl https://github.com/thiago/lvm/blob/master/lvm.yml -o $HOME/lvm.yml
 
 
-#### Using services
+### Using services
 
 Execute something like:
 
     $ lvm node -v
 or
+
     $ lvm npm install -g gulp
 
 Use `-s` to skip command and execute arguments directly
@@ -101,7 +102,7 @@ Global options
    --version		print the version
 ```
 
-# Development
+## Development
 
     $ make deps
     $ make binary
