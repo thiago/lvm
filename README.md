@@ -7,6 +7,11 @@ When executing a command, LVM creates a container with `PWD` mounted with
 network `host` by default, creates a "fake" user home to mount on every
 command and set `HOME` variable to fake user home.
 
+## Install
+
+    VERSION=0.0.2
+    curl -SL https://github.com/thiago/lvm/releases/download/v${VERSION}/lvm_${VERSION}_`uname -s`_`uname -m`.tar.gz | tar xzv -C /usr/local/bin/ lvm
+
 ## Usage
 
 LVM is configured with `.yml|.json` file. By default search `lvm.yml` in the
