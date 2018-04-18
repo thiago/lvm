@@ -58,7 +58,7 @@ For more examples, please see [lvm.yml](https://github.com/thiago/lvm/blob/maste
 
 Download the default configuration
 
-    $ curl https://github.com/thiago/lvm/blob/master/lvm.yml -o $HOME/lvm.yml
+    $ curl https://raw.githubusercontent.com/thiago/lvm/master/lvm.yml -o $HOME/lvm.yml
 
 
 ### Using services
