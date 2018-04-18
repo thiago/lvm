@@ -6,20 +6,26 @@ MODULE_NAME = $(shell go list)
 VERSION = $(shell git describe --tags --exact-match 2> /dev/null || git symbolic-ref -q --short HEAD)
 LDFLAGS = \
 	-X main.name=$(PROJECT_NAME) \
-	-X main.buildDate=$(BUILD_DATA) \
-	-X main.gitSHA=$(COMMIT_SHA) \
+	-X main.date=$(BUILD_DATA) \
+	-X main.commit=$(COMMIT_SHA) \
 	-X main.version=$(VERSION)
 
+.PHONY: all
+all: depslint lint deps test cross ## execute all commands
+
+.PHONY: deps
 deps: ## install dependencies
 	go get -u github.com/golang/dep/cmd/dep github.com/mitchellh/gox
 	dep ensure
 
+.PHONY: binary
 binary: ## build binary to current OS
 	gox -output "$(PROJECT_NAME)" \
 		-os `go env GOHOSTOS` \
 		-arch=`go env GOHOSTARCH` \
 		-ldflags='$(LDFLAGS)' $(MODULE_NAME)
 
+.PHONY: cross
 cross: ## build binary cross OS
 	rm -rf ./build/$(PROJECT_NAME)*
 	gox -output "./build/{{.Dir}}-{{.OS}}-{{.Arch}}" \
@@ -27,9 +33,11 @@ cross: ## build binary cross OS
 		-arch="amd64" \
 		-ldflags="$(LDFLAGS)" $(MODULE_NAME)
 
+.PHONY: test
 test: ## test go files
 	go test -cover $(shell go list ./...|grep -v '/vendor/')
 
+.PHONY: depslint
 depslint: ## install lint dependencies: gofmt, govet, golint, gocyclo, ineffassign
 	go get -u gopkg.in/alecthomas/gometalinter.v2
 	go get -u github.com/golang/lint/golint
@@ -47,8 +55,10 @@ depslint: ## install lint dependencies: gofmt, govet, golint, gocyclo, ineffassi
 	go get -u github.com/client9/misspell/cmd/misspell
 	go get -u github.com/alexkohler/nakedret
 
+.PHONY: lint
 lint: ## run all the lint tools (see gometalinter.json)
 	gometalinter.v2 --config gometalinter.json --vendor ./...
 
+.PHONY: help
 help: ## print this help
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {sub("\\\\n",sprintf("\n%22c"," "), $$2);printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)

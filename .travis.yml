@@ -1,10 +1,4 @@
 language: go
-script:
-  - make deps
-  - make depslint
-  - make lint
-  - make test
-  - make cross
 
 deploy:
 - provider: script
