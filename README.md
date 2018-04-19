@@ -25,7 +25,7 @@ The configuration has this structure
 
 type config struct {
     Services map[string]struct {
-        // Container image
+        // Image of the container
         Image string
         // Short description for the service
         Short string
